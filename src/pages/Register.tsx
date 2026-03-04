@@ -10,6 +10,7 @@ import toast from "react-hot-toast";
 import { useState } from "react";
 import { AxiosError } from "axios";
 import { IErrorResponse } from "../interfaces";
+import { Link, useNavigate } from "react-router-dom";
 
 interface IFormInputs {
   username: string;
@@ -18,6 +19,7 @@ interface IFormInputs {
 }
 
 const RegisterPage = () => {
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const {
     register,
@@ -35,11 +37,15 @@ const RegisterPage = () => {
       // console.log(response);
       if (response.status === 200) {
         toast.success(
-          "You will navigate to login page after 4 seconds to login!",
+          "You will navigate to login page after 2 seconds to login!",
           {
             position: "bottom-center",
           },
         );
+
+        setTimeout(() => {
+          navigate("/login");
+        }, 2000);
       }
     } catch (error) {
       //**Rejected *//
@@ -78,6 +84,13 @@ const RegisterPage = () => {
           Register
         </Button>
       </form>
+
+      <p className="mt-4 text-center">
+        Already have an account?{" "}
+        <Link to="/login" className="text-indigo-600 hover:underline">
+          Login here
+        </Link>
+      </p>
     </div>
   );
 };

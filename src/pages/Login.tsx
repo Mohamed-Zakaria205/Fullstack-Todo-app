@@ -10,6 +10,7 @@ import { axiosInstance } from "../config";
 import { IErrorResponse } from "../interfaces";
 import InputErrorMessage from "../components/ui/InputErrorMessage";
 import { LOGIN_INPUTS } from "../data";
+import { Link } from "react-router-dom";
 
 const LoginPage = () => {
   interface IFormInputs {
@@ -30,15 +31,22 @@ const LoginPage = () => {
     setIsLoading(true);
     try {
       //**Fulfilled *//
-      const response = await axiosInstance.post("/auth/local", data);
-      // console.log(response);
-      if (response.status === 200) {
+      const { status, data: resData } = await axiosInstance.post(
+        "/auth/local",
+        data,
+      );
+      console.log(resData);
+      if (status === 200) {
         toast.success(
-          "You will navigate to home page after 4 seconds to login!",
+          "You will navigate to home page after 2 seconds to login!",
           {
             position: "bottom-center",
           },
         );
+        localStorage.setItem("loggedInUser", JSON.stringify(resData));
+        setTimeout(() => {
+          location.replace("/");
+        }, 2000);
       }
     } catch (error) {
       //**Rejected *//
@@ -76,6 +84,12 @@ const LoginPage = () => {
           Login
         </Button>
       </form>
+      <p className="mt-4 text-center">
+        <span>You don't have an account? </span>
+        <Link to="/register" className="text-indigo-600">
+          Register here
+        </Link>
+      </p>
     </div>
   );
 };

@@ -3,9 +3,7 @@
 @tailwind utilities;
 
 .root-layout nav .active {
-  color: rgb(65, 65, 65);
-  background-color: rgba(178, 178, 178, 0.108);
-  border-radius: 10px;
   padding: 10px;
   font-weight: 600;
+  transition: all 0.3s ease-in-out;
 }

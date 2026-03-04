@@ -33,14 +33,14 @@ const Navbar = () => {
             </button>
           </div>
         ) : (
-          <p className="flex items-center space-x-3">
+          <div className="flex items-center space-x-3">
             <li className="text-black duration-200 font-semibold text-lg">
               <NavLink to="/register">Register</NavLink>
             </li>
             <li className="text-black duration-200 font-semibold text-lg">
               <NavLink to="/login">Login</NavLink>
             </li>
-          </p>
+          </div>
         )}
       </ul>
     </nav>
