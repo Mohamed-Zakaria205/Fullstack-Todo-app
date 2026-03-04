@@ -8,3 +8,9 @@ export interface IRegisterInput {
     minLength?: number;
   };
 }
+
+export interface IErrorResponse {
+  error: {
+    message?: string;
+  };
+}

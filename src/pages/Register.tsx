@@ -5,6 +5,11 @@ import { REGISTER_INPUTS } from "../data";
 import InputErrorMessage from "../components/ui/InputErrorMessage";
 import { registerSchema } from "../validation";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { axiosInstance } from "../config";
+import toast from "react-hot-toast";
+import { useState } from "react";
+import { AxiosError } from "axios";
+import { IErrorResponse } from "../interfaces";
 
 interface IFormInputs {
   username: string;
@@ -13,6 +18,7 @@ interface IFormInputs {
 }
 
 const RegisterPage = () => {
+  const [isLoading, setIsLoading] = useState(false);
   const {
     register,
     handleSubmit,
@@ -20,9 +26,31 @@ const RegisterPage = () => {
   } = useForm<IFormInputs>({
     resolver: yupResolver(registerSchema),
   });
-  console.log(errors);
+  // console.log(errors);
   const onSubmit: SubmitHandler<IFormInputs> = async (data) => {
-    console.log(data);
+    setIsLoading(true);
+    try {
+      //**Fulfilled *//
+      const response = await axiosInstance.post("/auth/local/register", data);
+      // console.log(response);
+      if (response.status === 200) {
+        toast.success(
+          "You will navigate to login page after 4 seconds to login!",
+          {
+            position: "bottom-center",
+          },
+        );
+      }
+    } catch (error) {
+      //**Rejected *//
+
+      const errObj = error as AxiosError<IErrorResponse>;
+      toast.error(`${errObj.response?.data.error.message}`, {
+        position: "bottom-center",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   // Renders
@@ -46,7 +74,9 @@ const RegisterPage = () => {
 
       <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
         {renderedInputs}
-        <Button fullWidth>Register</Button>
+        <Button fullWidth isLoading={isLoading}>
+          Register
+        </Button>
       </form>
     </div>
   );
