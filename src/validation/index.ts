@@ -12,3 +12,16 @@ export const registerSchema = yup
       .min(6, "password must be at least 6 characters long"),
   })
   .required();
+
+export const loginSchema = yup
+  .object({
+    identifier: yup
+      .string()
+      .required("identifier is required")
+      .min(5, "identifier must be at least 5 characters long"),
+    password: yup
+      .string()
+      .required("password is required")
+      .min(6, "password must be at least 6 characters long"),
+  })
+  .required();
