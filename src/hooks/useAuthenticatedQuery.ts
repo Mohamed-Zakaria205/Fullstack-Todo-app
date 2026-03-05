@@ -4,7 +4,7 @@ import { AxiosRequestConfig } from "axios";
 
 interface IAuthenticatedQuery {
   url: string;
-  queryKey: string;
+  queryKey: string[];
   config?: AxiosRequestConfig;
 }
 const useAuthenticatedQuery = ({

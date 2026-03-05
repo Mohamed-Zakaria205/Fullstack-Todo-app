@@ -24,3 +24,9 @@ export interface IErrorResponse {
     message?: string;
   };
 }
+
+export interface ITodo {
+  documentId: string;
+  title: string;
+  description?: string;
+}
