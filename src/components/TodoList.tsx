@@ -47,6 +47,7 @@ const TodoList = () => {
       });
 
       if (status === 200) {
+        setQueryVersion((prev) => prev + 1);
         onCloseEditModal();
       }
     } catch (error) {
@@ -80,8 +81,9 @@ const TodoList = () => {
       toast.success("Todo Added successfully", {
         position: "bottom-center",
       });
-
-      if (status === 200) {
+      console.log("add status", status);
+      if (status === 201) {
+        setQueryVersion((prev) => prev + 1);
         onCloseAddModal();
       }
     } catch (error) {
@@ -107,7 +109,7 @@ const TodoList = () => {
     title: "",
     description: "",
   });
-
+  const [queryVersion, setQueryVersion] = useState(1);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const storageKey = "loggedInUser";
@@ -116,7 +118,7 @@ const TodoList = () => {
 
   const { isLoading, data } = useAuthenticatedQuery({
     url: "/users/me?populate=todos&status=published",
-    queryKey: ["todoList", todoToEdit.documentId],
+    queryKey: ["todoList", `${queryVersion}`],
     config: {
       headers: {
         Authorization: `Bearer ${userData?.jwt}`,
@@ -210,6 +212,7 @@ const TodoList = () => {
           position: "bottom-center",
         });
         onCloseConfirmModal();
+        setQueryVersion((prev) => prev + 1);
       }
     } catch (error) {
       const errObj = error as AxiosError<IErrorResponse>;
@@ -240,6 +243,7 @@ const TodoList = () => {
                 className="bg-indigo-600 hover:bg-indigo-300 hover:text-black"
                 size={"sm"}
                 onClick={() => onOpenEditModal(todo)}
+                type={"button"}
               >
                 Edit
               </Button>
@@ -247,6 +251,7 @@ const TodoList = () => {
                 className="bg-red-500 hover:bg-red-300 hover:text-black"
                 size={"sm"}
                 onClick={() => onOpenConfirmModal(todo)}
+                type={"button"}
               >
                 Delete
               </Button>
@@ -289,10 +294,11 @@ const TodoList = () => {
             <Button
               className="bg-indigo-700 hover:bg-indigo-800"
               isLoading={isUpdating}
+              type={"submit"}
             >
               {isUpdating ? "Updating..." : "Update"}
             </Button>
-            <Button variant={"cancel"} onClick={onCloseEditModal}>
+            <Button variant={"cancel"} onClick={onCloseEditModal} type="button">
               Cancel
             </Button>
           </div>
@@ -332,10 +338,15 @@ const TodoList = () => {
             <Button
               className="bg-indigo-700 hover:bg-indigo-800"
               isLoading={isAdding}
+              type={"submit"}
             >
               {isAdding ? "Adding..." : "Add"}
             </Button>
-            <Button variant={"cancel"} onClick={onCloseAddModal}>
+            <Button
+              variant={"cancel"}
+              onClick={onCloseAddModal}
+              type={"button"}
+            >
               Cancel
             </Button>
           </div>
@@ -354,6 +365,7 @@ const TodoList = () => {
             className="bg-red-700 hover:bg-red-400"
             fullWidth
             onClick={onRemove}
+            type={"submit"}
           >
             Yes, Remove
           </Button>
@@ -361,6 +373,7 @@ const TodoList = () => {
             className="bg-gray-400 hover:bg-gray-200 hover:text-black"
             onClick={onCloseConfirmModal}
             fullWidth
+            type={"button"}
           >
             Cancel
           </Button>
