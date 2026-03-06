@@ -10,6 +10,7 @@ import toast from "react-hot-toast";
 import { useForm, SubmitHandler } from "react-hook-form";
 import InputErrorMessage from "./ui/InputErrorMessage";
 import TodoSkeleton from "./TodoSkeleton";
+import { faker } from "@faker-js/faker";
 
 interface ITodoForm {
   title: string;
@@ -24,7 +25,6 @@ const TodoList = () => {
     formState: { errors },
   } = useForm<ITodoForm>();
 
-  console.log(errors);
   const onSubmit: SubmitHandler<ITodoForm> = async (data) => {
     const { documentId } = todoToEdit;
     const { title, description } = data;
@@ -100,6 +100,7 @@ const TodoList = () => {
 
   const [isOpenConfirmModal, setIsOpenConfirmModal] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
   const [isAdding, setIsAdding] = useState(false);
   const [todoToEdit, setTodoToEdit] = useState<ITodo>({
     title: "",
@@ -146,6 +147,33 @@ const TodoList = () => {
   const onOpenAddModal = () => {
     setIsAddModalOpen(true);
     reset({ title: "", description: "" });
+  };
+
+  const onGenerateTodos = async () => {
+    for (let index = 0; index < 100; index++) {
+      setIsGenerating(true);
+      try {
+        await axiosInstance.post(
+          `/todos`,
+          {
+            data: {
+              title: faker.word.words(5),
+              description: faker.lorem.sentences(3),
+            },
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${userData?.jwt}`,
+            },
+          },
+        );
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsGenerating(false);
+      }
+    }
+    setQueryVersion((prev) => prev + 1);
   };
 
   const onOpenConfirmModal = (todo: ITodo) => {
@@ -198,12 +226,21 @@ const TodoList = () => {
   };
   return (
     <div className="max-w-lg mx-auto space-y-3">
-      <Button
-        className="mx-auto bg-indigo-600 hover:bg-indigo-300 hover:text-black mb-10"
-        onClick={onOpenAddModal}
-      >
-        Post a new todo
-      </Button>
+      <div className="flex items-center">
+        <Button
+          className="mx-auto bg-indigo-600 hover:bg-indigo-300 hover:text-black mb-10"
+          onClick={onOpenAddModal}
+        >
+          Post a new todo
+        </Button>
+        <Button
+          className="mx-auto bg-indigo-600 hover:bg-indigo-300 hover:text-black mb-10"
+          onClick={onGenerateTodos}
+          isLoading={isGenerating}
+        >
+          Generate Todos
+        </Button>
+      </div>
       {data.todos.length ? (
         data.todos.map((todo: ITodo) => (
           <div
@@ -284,6 +321,7 @@ const TodoList = () => {
           <Input
             {...register("title", { required: true })}
             className="w-full p-4 border border-gray-300 rounded-md"
+            placeholder="Title"
           />
           {errors.title?.type === "required" && (
             <InputErrorMessage message="this title is required" />
