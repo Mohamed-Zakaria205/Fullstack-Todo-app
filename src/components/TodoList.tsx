@@ -1,6 +1,6 @@
 import Button from "./ui/Button";
 import useAuthenticatedQuery from "../hooks/useAuthenticatedQuery";
-import { ChangeEvent, useState } from "react";
+import { useState } from "react";
 import Modal from "./ui/Modal";
 import { Input, Textarea } from "@headlessui/react";
 import { IErrorResponse, ITodo } from "../interfaces";
@@ -20,12 +20,14 @@ const TodoList = () => {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<ITodoForm>();
 
   console.log(errors);
-  const onSubmit: SubmitHandler<ITodoForm> = async () => {
-    const { documentId, title, description } = todoToEdit;
+  const onSubmit: SubmitHandler<ITodoForm> = async (data) => {
+    const { documentId } = todoToEdit;
+    const { title, description } = data;
     setIsUpdating(true);
     try {
       const { status } = await axiosInstance.put(
@@ -60,8 +62,8 @@ const TodoList = () => {
     }
   };
 
-  const onAddSubmit: SubmitHandler<ITodoForm> = async () => {
-    const { title, description } = todoToAdd;
+  const onAddSubmit: SubmitHandler<ITodoForm> = async (data) => {
+    const { title, description } = data;
     setIsAdding(true);
     try {
       const { status } = await axiosInstance.post(
@@ -82,9 +84,9 @@ const TodoList = () => {
         position: "bottom-center",
       });
       console.log("add status", status);
-      if (status === 201) {
-        setQueryVersion((prev) => prev + 1);
+      if (status === 200) {
         onCloseAddModal();
+        setQueryVersion((prev) => prev + 1);
       }
     } catch (error) {
       const errObj = error as AxiosError<IErrorResponse>;
@@ -104,10 +106,6 @@ const TodoList = () => {
     description: "",
     documentId: "",
     id: 0,
-  });
-  const [todoToAdd, setTodoToAdd] = useState({
-    title: "",
-    description: "",
   });
   const [queryVersion, setQueryVersion] = useState(1);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -139,17 +137,15 @@ const TodoList = () => {
   const onOpenEditModal = (todo: ITodo) => {
     setIsEditModalOpen(true);
     setTodoToEdit(todo);
+    reset({ title: todo.title, description: todo.description });
   };
 
   const onCloseAddModal = () => {
-    setTodoToAdd({
-      title: "",
-      description: "",
-    });
     setIsAddModalOpen(false);
   };
   const onOpenAddModal = () => {
     setIsAddModalOpen(true);
+    reset({ title: "", description: "" });
   };
 
   const onOpenConfirmModal = (todo: ITodo) => {
@@ -174,27 +170,6 @@ const TodoList = () => {
       </>
     );
   }
-
-  const onChangeHandler = (
-    evt: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => {
-    const { value, name } = evt.target;
-
-    setTodoToEdit({
-      ...todoToEdit,
-      [name]: value,
-    });
-  };
-  const onChangeAddHandler = (
-    evt: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => {
-    const { value, name } = evt.target;
-
-    setTodoToAdd({
-      ...todoToAdd,
-      [name]: value,
-    });
-  };
 
   const onRemove = async () => {
     try {
@@ -271,9 +246,6 @@ const TodoList = () => {
           <Input
             {...register("title", { required: true })}
             className="w-full p-4 border border-gray-300 rounded-md"
-            name="title"
-            onChange={onChangeHandler}
-            value={todoToEdit.title}
           />
           {errors.title?.type === "required" && (
             <InputErrorMessage message="this title is required" />
@@ -281,11 +253,8 @@ const TodoList = () => {
           <Textarea
             {...register("description", { minLength: 20 })}
             className="w-full p-4 border border-gray-300 rounded-md mt-4"
-            name="description"
-            onChange={onChangeHandler}
             placeholder="Description"
             rows={7}
-            value={todoToEdit.description}
           />
           {errors.description?.type === "minLength" && (
             <InputErrorMessage message="this description must be at least 20 characters long" />
@@ -315,9 +284,6 @@ const TodoList = () => {
           <Input
             {...register("title", { required: true })}
             className="w-full p-4 border border-gray-300 rounded-md"
-            name="title"
-            onChange={onChangeAddHandler}
-            value={todoToAdd.title}
           />
           {errors.title?.type === "required" && (
             <InputErrorMessage message="this title is required" />
@@ -325,11 +291,8 @@ const TodoList = () => {
           <Textarea
             {...register("description", { minLength: 20 })}
             className="w-full p-4 border border-gray-300 rounded-md mt-4"
-            name="description"
-            onChange={onChangeAddHandler}
             placeholder="Description"
             rows={7}
-            value={todoToAdd.description}
           />
           {errors.description?.type === "minLength" && (
             <InputErrorMessage message="this description must be at least 20 characters long" />
