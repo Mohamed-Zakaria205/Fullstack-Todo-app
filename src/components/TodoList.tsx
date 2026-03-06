@@ -59,16 +59,57 @@ const TodoList = () => {
     }
   };
 
+  const onAddSubmit: SubmitHandler<ITodoForm> = async () => {
+    const { title, description } = todoToAdd;
+    setIsAdding(true);
+    try {
+      const { status } = await axiosInstance.post(
+        `/todos`,
+        {
+          data: {
+            title,
+            description,
+          },
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${userData?.jwt}`,
+          },
+        },
+      );
+      toast.success("Todo Added successfully", {
+        position: "bottom-center",
+      });
+
+      if (status === 200) {
+        onCloseAddModal();
+      }
+    } catch (error) {
+      const errObj = error as AxiosError<IErrorResponse>;
+      toast.error(`${errObj.response?.data.error.message}`, {
+        position: "bottom-center",
+      });
+    } finally {
+      setIsAdding(false);
+    }
+  };
+
   const [isOpenConfirmModal, setIsOpenConfirmModal] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
+  const [isAdding, setIsAdding] = useState(false);
   const [todoToEdit, setTodoToEdit] = useState<ITodo>({
     title: "",
     description: "",
     documentId: "",
     id: 0,
   });
+  const [todoToAdd, setTodoToAdd] = useState({
+    title: "",
+    description: "",
+  });
 
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const storageKey = "loggedInUser";
   const userDataString = localStorage.getItem(storageKey);
   const userData = userDataString ? JSON.parse(userDataString) : null;
@@ -96,6 +137,17 @@ const TodoList = () => {
   const onOpenEditModal = (todo: ITodo) => {
     setIsEditModalOpen(true);
     setTodoToEdit(todo);
+  };
+
+  const onCloseAddModal = () => {
+    setTodoToAdd({
+      title: "",
+      description: "",
+    });
+    setIsAddModalOpen(false);
+  };
+  const onOpenAddModal = () => {
+    setIsAddModalOpen(true);
   };
 
   const onOpenConfirmModal = (todo: ITodo) => {
@@ -131,6 +183,16 @@ const TodoList = () => {
       [name]: value,
     });
   };
+  const onChangeAddHandler = (
+    evt: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    const { value, name } = evt.target;
+
+    setTodoToAdd({
+      ...todoToAdd,
+      [name]: value,
+    });
+  };
 
   const onRemove = async () => {
     try {
@@ -158,6 +220,12 @@ const TodoList = () => {
   };
   return (
     <div className="max-w-lg mx-auto space-y-3">
+      <Button
+        className="mx-auto bg-indigo-600 hover:bg-indigo-300 hover:text-black mb-10"
+        onClick={onOpenAddModal}
+      >
+        Post a new todo
+      </Button>
       {data.todos.length ? (
         data.todos.map((todo: ITodo) => (
           <div
@@ -225,6 +293,49 @@ const TodoList = () => {
               {isUpdating ? "Updating..." : "Update"}
             </Button>
             <Button variant={"cancel"} onClick={onCloseEditModal}>
+              Cancel
+            </Button>
+          </div>
+        </form>
+      </Modal>
+
+      {/*Add todo Modal */}
+      <Modal
+        isOpen={isAddModalOpen}
+        close={onCloseAddModal}
+        title="Add a new todo"
+      >
+        <form onSubmit={handleSubmit(onAddSubmit)}>
+          <Input
+            {...register("title", { required: true })}
+            className="w-full p-4 border border-gray-300 rounded-md"
+            name="title"
+            onChange={onChangeAddHandler}
+            value={todoToAdd.title}
+          />
+          {errors.title?.type === "required" && (
+            <InputErrorMessage message="this title is required" />
+          )}
+          <Textarea
+            {...register("description", { minLength: 20 })}
+            className="w-full p-4 border border-gray-300 rounded-md mt-4"
+            name="description"
+            onChange={onChangeAddHandler}
+            placeholder="Description"
+            rows={7}
+            value={todoToAdd.description}
+          />
+          {errors.description?.type === "minLength" && (
+            <InputErrorMessage message="this description must be at least 20 characters long" />
+          )}
+          <div className="flex items-center  space-x-2 mt-4">
+            <Button
+              className="bg-indigo-700 hover:bg-indigo-800"
+              isLoading={isAdding}
+            >
+              {isAdding ? "Adding..." : "Add"}
+            </Button>
+            <Button variant={"cancel"} onClick={onCloseAddModal}>
               Cancel
             </Button>
           </div>
