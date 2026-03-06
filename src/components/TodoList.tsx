@@ -9,6 +9,7 @@ import { AxiosError } from "axios";
 import toast from "react-hot-toast";
 import { useForm, SubmitHandler } from "react-hook-form";
 import InputErrorMessage from "./ui/InputErrorMessage";
+import TodoSkeleton from "./TodoSkeleton";
 
 interface ITodoForm {
   title: string;
@@ -58,11 +59,13 @@ const TodoList = () => {
     }
   };
 
+  const [isOpenConfirmModal, setIsOpenConfirmModal] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
   const [todoToEdit, setTodoToEdit] = useState<ITodo>({
     title: "",
     description: "",
     documentId: "",
+    id: 0,
   });
 
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -75,7 +78,7 @@ const TodoList = () => {
     queryKey: ["todoList", todoToEdit.documentId],
     config: {
       headers: {
-        Authorization: `bearer ${userData?.jwt}`,
+        Authorization: `Bearer ${userData?.jwt}`,
       },
     },
   });
@@ -87,6 +90,7 @@ const TodoList = () => {
       title: "",
       description: "",
       documentId: "",
+      id: 0,
     });
   };
   const onOpenEditModal = (todo: ITodo) => {
@@ -94,7 +98,28 @@ const TodoList = () => {
     setTodoToEdit(todo);
   };
 
-  if (isLoading) return "Loading...";
+  const onOpenConfirmModal = (todo: ITodo) => {
+    setIsOpenConfirmModal(true);
+    setTodoToEdit(todo);
+  };
+  const onCloseConfirmModal = () => {
+    setIsOpenConfirmModal(false);
+    setTodoToEdit({
+      title: "",
+      description: "",
+      documentId: "",
+      id: 0,
+    });
+  };
+  if (isLoading) {
+    return (
+      <>
+        {Array.from({ length: 5 }, (_, idx) => (
+          <TodoSkeleton key={idx} />
+        ))}
+      </>
+    );
+  }
 
   const onChangeHandler = (
     evt: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -107,6 +132,30 @@ const TodoList = () => {
     });
   };
 
+  const onRemove = async () => {
+    try {
+      const res = await axiosInstance.delete(
+        `/todos/${todoToEdit.documentId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${userData?.jwt}`,
+          },
+        },
+      );
+
+      if (res.status === 204) {
+        toast.success("Todo deleted successfully!", {
+          position: "bottom-center",
+        });
+        onCloseConfirmModal();
+      }
+    } catch (error) {
+      const errObj = error as AxiosError<IErrorResponse>;
+      toast.error(`${errObj.response?.data.error.message}`, {
+        position: "bottom-center",
+      });
+    }
+  };
   return (
     <div className="max-w-lg mx-auto space-y-3">
       {data.todos.length ? (
@@ -115,23 +164,29 @@ const TodoList = () => {
             key={todo.documentId}
             className="flex items-center justify-between hover:bg-gray-100 p-3 rounded-md"
           >
-            <p className="w-full font-semibold text-lg">-{todo.title}</p>
+            <p className="w-full font-semibold text-lg">
+              {todo.id}- {todo.title}
+            </p>
             <div className="flex items-center justify-start gap-x-2">
               <Button
-                className="bg-indigo-600"
+                className="bg-indigo-600 hover:bg-indigo-300 hover:text-black"
                 size={"sm"}
                 onClick={() => onOpenEditModal(todo)}
               >
                 Edit
               </Button>
-              <Button className="bg-red-600" size={"sm"}>
+              <Button
+                className="bg-red-500 hover:bg-red-300 hover:text-black"
+                size={"sm"}
+                onClick={() => onOpenConfirmModal(todo)}
+              >
                 Delete
               </Button>
             </div>
           </div>
         ))
       ) : (
-        <h3>No todos yet</h3>
+        <h3 className="text-center text-lg">No todos yet!</h3>
       )}
       {/*Edit todo Modal */}
       <Modal
@@ -174,6 +229,31 @@ const TodoList = () => {
             </Button>
           </div>
         </form>
+      </Modal>
+
+      {/* Delete todo Modal */}
+      <Modal
+        isOpen={isOpenConfirmModal}
+        close={onCloseConfirmModal}
+        title="Are you sure you want to remove this product?"
+        description="This action cannot be undone. The product will be permanently removed from your inventory."
+      >
+        <div className="flex items-center space-x-3 text-white ">
+          <Button
+            className="bg-red-700 hover:bg-red-400"
+            fullWidth
+            onClick={onRemove}
+          >
+            Yes, Remove
+          </Button>
+          <Button
+            className="bg-gray-400 hover:bg-gray-200 hover:text-black"
+            onClick={onCloseConfirmModal}
+            fullWidth
+          >
+            Cancel
+          </Button>
+        </div>
       </Modal>
     </div>
   );
