@@ -1,64 +1,86 @@
-const Paginator = () => {
+interface IProps {
+  page: number;
+  pageCount: number;
+  total: number;
+  isLoading: boolean;
+  onClickPrevious: () => void;
+  onClickNext: () => void;
+}
+
+const Paginator = ({
+  page = 1,
+  pageCount,
+  total,
+  isLoading,
+  onClickNext,
+  onClickPrevious,
+}: IProps) => {
   return (
-    <div className="flex justify-center items-center">
-      <p className="text-sm text-gray-600 dark:text-gray-300 mx-3">
-        Page{" "}
+    <div className="flex flex-col justify-center items-center space-y-5 mb-10">
+      <p className="text-sm text-gray-600 dark:text-gray-300 mx-3 mt-5">
+        Page
         <span className="mx-1 font-semibold text-gray-900 dark:text-white text-md-1">
-          {}
+          {page}
         </span>{" "}
         to
         <span className="mx-1 font-semibold text-gray-900 dark:text-white">
-          {}
+          {pageCount}
         </span>{" "}
         of
         <span className="mx-1 font-semibold text-gray-900 dark:text-white">
-          {}
+          {total}
         </span>{" "}
         Records
       </p>
 
-      <button
-        type="button"
-        className="bg-gray-800 text-white rounded-l-md border-r border border-gray-100 flex items-center justify-center px-4 h-10 me-3 text-base font-medium rounded-lg hover:bg-indigo-600 hover:text-white  disabled:bg-gray-400 disabled:hover:bg-gray-400 disabled:cursor-not-allowed"
-      >
-        <svg
-          className="w-3.5 h-3.5 me-2 rtl:rotate-180"
-          aria-hidden="true"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 14 10"
+      <div className="flex mb-5">
+        <button
+          type="button"
+          className="bg-gray-800 text-white rounded-l-md border-r border border-gray-100 flex items-center justify-center px-4 h-10 me-3 text-base font-medium rounded-lg hover:bg-indigo-600 hover:text-white  disabled:bg-gray-400 disabled:hover:bg-gray-400 disabled:cursor-not-allowed"
+          disabled={page === 1 || isLoading}
+          onClick={onClickPrevious}
         >
-          <path
-            stroke="currentColor"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-            d="M13 5H1m0 0 4 4M1 5l4-4"
-          />
-        </svg>
-        Previous
-      </button>
-      <button
-        type="button"
-        className="bg-gray-800 text-white rounded-l-md border-r border border-gray-100 flex items-center justify-center px-4 h-10 me-3 text-base font-medium rounded-lg hover:bg-indigo-600 hover:text-white dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white disabled:bg-gray-400 disabled:hover:bg-gray-400 disabled:cursor-not-allowed"
-      >
-        Next
-        <svg
-          className="w-3.5 h-3.5 ms-2 rtl:rotate-180"
-          aria-hidden="true"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 14 10"
+          <svg
+            className="w-3.5 h-3.5 me-2 rtl:rotate-180"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 14 10"
+          >
+            <path
+              stroke="currentColor"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M13 5H1m0 0 4 4M1 5l4-4"
+            />
+          </svg>
+          Previous
+        </button>
+        <button
+          type="button"
+          className="bg-gray-800 text-white rounded-l-md border-r border border-gray-100 flex items-center justify-center px-4 h-10 me-3 text-base font-medium rounded-lg hover:bg-indigo-600 hover:text-white dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white disabled:bg-gray-400 disabled:hover:bg-gray-400 disabled:cursor-not-allowed"
+          disabled={page === pageCount || isLoading}
+          onClick={onClickNext}
         >
-          <path
-            stroke="currentColor"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-            d="M1 5h12m0 0L9 1m4 4L9 9"
-          />
-        </svg>
-      </button>
+          Next
+          <svg
+            className="w-3.5 h-3.5 ms-2 rtl:rotate-180"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 14 10"
+          >
+            <path
+              stroke="currentColor"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M1 5h12m0 0L9 1m4 4L9 9"
+            />
+          </svg>
+        </button>
+      </div>
     </div>
   );
 };

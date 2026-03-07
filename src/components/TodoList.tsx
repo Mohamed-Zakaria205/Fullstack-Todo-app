@@ -10,7 +10,8 @@ import toast from "react-hot-toast";
 import { useForm, SubmitHandler } from "react-hook-form";
 import InputErrorMessage from "./ui/InputErrorMessage";
 import TodoSkeleton from "./TodoSkeleton";
-import { faker } from "@faker-js/faker";
+import { onGenerateTodos } from "../utils/functions";
+// import { faker } from "@faker-js/faker";
 
 interface ITodoForm {
   title: string;
@@ -149,33 +150,6 @@ const TodoList = () => {
     reset({ title: "", description: "" });
   };
 
-  const onGenerateTodos = async () => {
-    for (let index = 0; index < 100; index++) {
-      setIsGenerating(true);
-      try {
-        await axiosInstance.post(
-          `/todos`,
-          {
-            data: {
-              title: faker.word.words(5),
-              description: faker.lorem.sentences(3),
-            },
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${userData?.jwt}`,
-            },
-          },
-        );
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setIsGenerating(false);
-      }
-    }
-    setQueryVersion((prev) => prev + 1);
-  };
-
   const onOpenConfirmModal = (todo: ITodo) => {
     setIsOpenConfirmModal(true);
     setTodoToEdit(todo);
@@ -235,7 +209,9 @@ const TodoList = () => {
         </Button>
         <Button
           className="mx-auto bg-indigo-600 hover:bg-indigo-300 hover:text-black mb-10"
-          onClick={onGenerateTodos}
+          onClick={() =>
+            onGenerateTodos(userData?.jwt, setIsGenerating, setQueryVersion)
+          }
           isLoading={isGenerating}
         >
           Generate Todos
