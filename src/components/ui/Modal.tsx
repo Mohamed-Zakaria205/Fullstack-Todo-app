@@ -26,26 +26,29 @@ const Modal = ({ isOpen, close, title, description, children }: IProps) => {
       >
         <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
           <div className="flex min-h-full items-center justify-center p-4">
-            <DialogBackdrop className="fixed inset-0 bg-black/30 backdrop-blur-sm" />
+            <DialogBackdrop className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" />
             <DialogPanel
               transition
-              className="w-full max-w-md rounded-xl bg-white p-6  duration-300 ease-out data-closed:transform-[scale(95%)] data-closed:opacity-0  z-50"
+              className="w-full max-w-lg transform overflow-hidden rounded-2xl bg-white p-8 text-left align-middle shadow-2xl transition-all duration-300 ease-out data-closed:scale-95 data-closed:opacity-0 z-50"
             >
               {title && (
                 <DialogTitle
                   as="h3"
-                  className="text-2xl font-semibold text-black mb-3"
+                  className="text-2xl font-bold leading-6 text-gray-900 mb-2"
                 >
                   {title}
                 </DialogTitle>
               )}
               {description && (
-                <DialogDescription as="p" className="text-md text-gray-600">
+                <DialogDescription
+                  as="p"
+                  className="text-base text-gray-500 mb-4"
+                >
                   {description}
                 </DialogDescription>
               )}
 
-              <div className="mt-4">{children}</div>
+              <div className="mt-6">{children}</div>
             </DialogPanel>
           </div>
         </div>

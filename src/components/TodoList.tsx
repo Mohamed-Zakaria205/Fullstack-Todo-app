@@ -199,16 +199,11 @@ const TodoList = () => {
     }
   };
   return (
-    <div className="max-w-lg mx-auto space-y-3">
-      <div className="flex items-center">
+    <div className="max-w-3xl mx-auto space-y-5">
+      <div className="flex items-center justify-center space-x-4 mb-8">
+        <Button onClick={onOpenAddModal}>Post a new todo</Button>
         <Button
-          className="mx-auto bg-indigo-600 hover:bg-indigo-300 hover:text-black mb-10"
-          onClick={onOpenAddModal}
-        >
-          Post a new todo
-        </Button>
-        <Button
-          className="mx-auto bg-indigo-600 hover:bg-indigo-300 hover:text-black mb-10"
+          variant={"outline"}
           onClick={() =>
             onGenerateTodos(userData?.jwt, setIsGenerating, setQueryVersion)
           }
@@ -221,14 +216,14 @@ const TodoList = () => {
         data.todos.map((todo: ITodo) => (
           <div
             key={todo.documentId}
-            className="flex items-center justify-between hover:bg-gray-100 p-3 rounded-md"
+            className="flex items-center justify-between bg-white hover:bg-gray-50 p-5 rounded-xl shadow-sm border border-gray-100 transition-all duration-200 focus-within:ring-2 focus-within:ring-indigo-500 hover:shadow-md group"
           >
-            <p className="w-full font-semibold text-lg">
-              {todo.id}- {todo.title}
+            <p className="w-full font-medium text-gray-800 text-lg">
+              <span className="text-gray-400 mr-2 text-sm">#{todo.id}</span>
+              {todo.title}
             </p>
-            <div className="flex items-center justify-start gap-x-2">
+            <div className="flex items-center justify-end gap-x-3 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
               <Button
-                className="bg-indigo-600 hover:bg-indigo-300 hover:text-black"
                 size={"sm"}
                 onClick={() => onOpenEditModal(todo)}
                 type={"button"}
@@ -236,7 +231,7 @@ const TodoList = () => {
                 Edit
               </Button>
               <Button
-                className="bg-red-500 hover:bg-red-300 hover:text-black"
+                variant={"danger"}
                 size={"sm"}
                 onClick={() => onOpenConfirmModal(todo)}
                 type={"button"}
@@ -255,33 +250,32 @@ const TodoList = () => {
         close={onCloseEditModal}
         title="Edit this todo"
       >
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <Input
-            {...register("title", { required: true })}
-            className="w-full p-4 border border-gray-300 rounded-md"
-          />
-          {errors.title?.type === "required" && (
-            <InputErrorMessage message="this title is required" />
-          )}
-          <Textarea
-            {...register("description", { minLength: 20 })}
-            className="w-full p-4 border border-gray-300 rounded-md mt-4"
-            placeholder="Description"
-            rows={7}
-          />
-          {errors.description?.type === "minLength" && (
-            <InputErrorMessage message="this description must be at least 20 characters long" />
-          )}
-          <div className="flex items-center  space-x-2 mt-4">
-            <Button
-              className="bg-indigo-700 hover:bg-indigo-800"
-              isLoading={isUpdating}
-              type={"submit"}
-            >
-              {isUpdating ? "Updating..." : "Update"}
-            </Button>
+        <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
+          <div>
+            <Input
+              {...register("title", { required: true })}
+              placeholder="Title"
+            />
+            {errors.title?.type === "required" && (
+              <InputErrorMessage message="this title is required" />
+            )}
+          </div>
+          <div>
+            <Textarea
+              {...register("description", { minLength: 20 })}
+              placeholder="Description"
+              rows={7}
+            />
+            {errors.description?.type === "minLength" && (
+              <InputErrorMessage message="this description must be at least 20 characters long" />
+            )}
+          </div>
+          <div className="flex items-center justify-end space-x-3 mt-6">
             <Button variant={"cancel"} onClick={onCloseEditModal} type="button">
               Cancel
+            </Button>
+            <Button isLoading={isUpdating} type={"submit"}>
+              {isUpdating ? "Updating..." : "Update"}
             </Button>
           </div>
         </form>
@@ -293,38 +287,36 @@ const TodoList = () => {
         close={onCloseAddModal}
         title="Add a new todo"
       >
-        <form onSubmit={handleSubmit(onAddSubmit)}>
-          <Input
-            {...register("title", { required: true })}
-            className="w-full p-4 border border-gray-300 rounded-md"
-            placeholder="Title"
-          />
-          {errors.title?.type === "required" && (
-            <InputErrorMessage message="this title is required" />
-          )}
-          <Textarea
-            {...register("description", { minLength: 20 })}
-            className="w-full p-4 border border-gray-300 rounded-md mt-4"
-            placeholder="Description"
-            rows={7}
-          />
-          {errors.description?.type === "minLength" && (
-            <InputErrorMessage message="this description must be at least 20 characters long" />
-          )}
-          <div className="flex items-center  space-x-2 mt-4">
-            <Button
-              className="bg-indigo-700 hover:bg-indigo-800"
-              isLoading={isAdding}
-              type={"submit"}
-            >
-              {isAdding ? "Adding..." : "Add"}
-            </Button>
+        <form className="space-y-4" onSubmit={handleSubmit(onAddSubmit)}>
+          <div>
+            <Input
+              {...register("title", { required: true })}
+              placeholder="Title"
+            />
+            {errors.title?.type === "required" && (
+              <InputErrorMessage message="this title is required" />
+            )}
+          </div>
+          <div>
+            <Textarea
+              {...register("description", { minLength: 20 })}
+              placeholder="Description"
+              rows={7}
+            />
+            {errors.description?.type === "minLength" && (
+              <InputErrorMessage message="this description must be at least 20 characters long" />
+            )}
+          </div>
+          <div className="flex items-center justify-end space-x-3 mt-6">
             <Button
               variant={"cancel"}
               onClick={onCloseAddModal}
               type={"button"}
             >
               Cancel
+            </Button>
+            <Button isLoading={isAdding} type={"submit"}>
+              {isAdding ? "Adding..." : "Add"}
             </Button>
           </div>
         </form>
@@ -337,22 +329,16 @@ const TodoList = () => {
         title="Are you sure you want to remove this product?"
         description="This action cannot be undone. The product will be permanently removed from your inventory."
       >
-        <div className="flex items-center space-x-3 text-white ">
+        <div className="flex items-center justify-end space-x-3 mt-6">
           <Button
-            className="bg-red-700 hover:bg-red-400"
-            fullWidth
-            onClick={onRemove}
-            type={"submit"}
-          >
-            Yes, Remove
-          </Button>
-          <Button
-            className="bg-gray-400 hover:bg-gray-200 hover:text-black"
+            variant="cancel"
             onClick={onCloseConfirmModal}
-            fullWidth
             type={"button"}
           >
             Cancel
+          </Button>
+          <Button variant="danger" onClick={onRemove} type={"submit"}>
+            Yes, Remove
           </Button>
         </div>
       </Modal>

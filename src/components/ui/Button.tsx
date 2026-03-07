@@ -3,25 +3,25 @@ import { VariantProps, cva } from "class-variance-authority";
 import { HTMLAttributes, ReactNode } from "react";
 
 const buttonVariants = cva(
-  "flex items-center justify-center rounded-md font-medium text-white duration-300 dark:text-black disabled:bg-indigo-400 disabled:hover:bg-indigo-400 disabled:cursor-not-allowed",
+  "flex items-center justify-center rounded-lg font-medium tracking-wide transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed active:scale-[0.98]",
   {
     variants: {
       variant: {
         // ** FILLED
         default:
-          "bg-slate-900 dark:bg-indigo-600 dark:text-white dark:hover:bg-indigo-700",
+          "bg-indigo-600 text-white shadow-md hover:bg-indigo-700 hover:shadow-lg focus:ring-indigo-500",
         danger:
-          "bg-red-900 dark:bg-[#c2344d] dark:text-white dark:hover:bg-red-700",
+          "bg-red-600 text-white shadow-md hover:bg-red-700 hover:shadow-lg focus:ring-red-500",
         cancel:
-          "bg-gray-300 text-gray-700 dark:bg-[#f5f5fa] dark:text-dark hover:bg-gray-400 dark:hover:bg-gray-200",
+          "bg-gray-200 text-gray-800 shadow-sm hover:bg-gray-300 focus:ring-gray-300",
 
         // ** OUTLINE
         outline:
-          "border border-indigo-400 hover:text-white bg-transparent text-black hover:border-transparent hover:bg-indigo-600 dark:text-gray-700 dark:hover:text-white",
+          "border-2 border-indigo-600 bg-transparent text-indigo-700 hover:bg-indigo-600 hover:text-white hover:shadow-md focus:ring-indigo-500",
       },
       size: {
-        default: "p-3",
-        sm: "text-sm px-4 py-2",
+        default: "px-5 py-3 text-base",
+        sm: "px-4 py-2 text-sm",
       },
       fullWidth: {
         true: "w-full",

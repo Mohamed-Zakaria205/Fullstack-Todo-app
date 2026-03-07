@@ -33,18 +33,7 @@ const router = createBrowserRouter(
             </ProtectedRoute>
           }
         />
-        <Route
-          path="profile"
-          element={
-            <ProtectedRoute
-              isAllowed={userData}
-              redirectPath="/login"
-              data={userData}
-            >
-              <h2>Profile page</h2>
-            </ProtectedRoute>
-          }
-        />
+
         <Route
           path="todos"
           element={

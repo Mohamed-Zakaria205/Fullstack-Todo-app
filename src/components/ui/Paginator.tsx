@@ -16,67 +16,61 @@ const Paginator = ({
   onClickPrevious,
 }: IProps) => {
   return (
-    <div className="flex flex-col justify-center items-center space-y-5 mb-10">
-      <p className="text-sm text-gray-600 dark:text-gray-300 mx-3 mt-5">
-        Page
-        <span className="mx-1 font-semibold text-gray-900 dark:text-white text-md-1">
-          {page}
-        </span>{" "}
+    <div className="flex flex-col justify-center items-center space-y-6 my-10 font-sans">
+      <p className="text-sm text-gray-600 mx-3">
+        Showing Page
+        <span className="mx-1.5 font-bold text-gray-900">{page}</span>
         to
-        <span className="mx-1 font-semibold text-gray-900 dark:text-white">
-          {pageCount}
-        </span>{" "}
+        <span className="mx-1.5 font-bold text-gray-900">{pageCount}</span>
         of
-        <span className="mx-1 font-semibold text-gray-900 dark:text-white">
-          {total}
-        </span>{" "}
+        <span className="mx-1.5 font-bold text-gray-900">{total}</span>
         Records
       </p>
 
-      <div className="flex mb-5">
+      <div className="inline-flex rounded-lg shadow-sm">
         <button
           type="button"
-          className="bg-gray-800 text-white rounded-l-md border-r border border-gray-100 flex items-center justify-center px-4 h-10 me-3 text-base font-medium rounded-lg hover:bg-indigo-600 hover:text-white  disabled:bg-gray-400 disabled:hover:bg-gray-400 disabled:cursor-not-allowed"
+          className="inline-flex items-center justify-center px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-50 hover:text-indigo-600 focus:z-10 focus:ring-2 focus:ring-indigo-500 focus:text-indigo-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-400"
           disabled={page === 1 || isLoading}
           onClick={onClickPrevious}
         >
           <svg
-            className="w-3.5 h-3.5 me-2 rtl:rotate-180"
+            className="w-4 h-4 mr-2"
             aria-hidden="true"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
-            viewBox="0 0 14 10"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
           >
             <path
-              stroke="currentColor"
               strokeLinecap="round"
               strokeLinejoin="round"
               strokeWidth="2"
-              d="M13 5H1m0 0 4 4M1 5l4-4"
+              d="M15 19l-7-7 7-7"
             />
           </svg>
           Previous
         </button>
         <button
           type="button"
-          className="bg-gray-800 text-white rounded-l-md border-r border border-gray-100 flex items-center justify-center px-4 h-10 me-3 text-base font-medium rounded-lg hover:bg-indigo-600 hover:text-white dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white disabled:bg-gray-400 disabled:hover:bg-gray-400 disabled:cursor-not-allowed"
+          className="inline-flex items-center justify-center px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-l-0 border-gray-300 rounded-r-lg hover:bg-gray-50 hover:text-indigo-600 focus:z-10 focus:ring-2 focus:ring-indigo-500 focus:text-indigo-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-400"
           disabled={page === pageCount || isLoading}
           onClick={onClickNext}
         >
           Next
           <svg
-            className="w-3.5 h-3.5 ms-2 rtl:rotate-180"
+            className="w-4 h-4 ml-2"
             aria-hidden="true"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
-            viewBox="0 0 14 10"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
           >
             <path
-              stroke="currentColor"
               strokeLinecap="round"
               strokeLinejoin="round"
               strokeWidth="2"
-              d="M1 5h12m0 0L9 1m4 4L9 9"
+              d="M9 5l7 7-7 7"
             />
           </svg>
         </button>

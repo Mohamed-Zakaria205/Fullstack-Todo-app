@@ -73,21 +73,29 @@ const RegisterPage = () => {
     ),
   );
   return (
-    <div className="max-w-md mx-auto">
-      <h2 className="mb-4 text-3xl font-semibold text-center">
-        Register to get access!
-      </h2>
+    <div className="max-w-md mx-auto bg-white rounded-2xl shadow-xl border border-gray-100 p-8 mt-10 sm:mt-20">
+      <div className="text-center mb-8">
+        <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">
+          Create an Account
+        </h2>
+        <p className="text-gray-500 mt-2 text-sm">Register to get access!</p>
+      </div>
 
-      <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
+      <form className="space-y-5" onSubmit={handleSubmit(onSubmit)}>
         {renderedInputs}
-        <Button fullWidth isLoading={isLoading}>
-          Register
-        </Button>
+        <div className="pt-2">
+          <Button fullWidth isLoading={isLoading}>
+            Register
+          </Button>
+        </div>
       </form>
 
-      <p className="mt-4 text-center">
+      <p className="mt-8 text-center text-sm text-gray-600">
         Already have an account?{" "}
-        <Link to="/login" className="text-indigo-600 hover:underline">
+        <Link
+          to="/login"
+          className="text-indigo-600 font-semibold hover:text-indigo-500 transition-colors"
+        >
           Login here
         </Link>
       </p>
