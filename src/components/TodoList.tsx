@@ -2,7 +2,8 @@ import Button from "./ui/Button";
 import useAuthenticatedQuery from "../hooks/useAuthenticatedQuery";
 import { useState } from "react";
 import Modal from "./ui/Modal";
-import { Input, Textarea } from "@headlessui/react";
+import Input from "./ui/Input";
+import Textarea from "./ui/Textarea";
 import { IErrorResponse, ITodo } from "../interfaces";
 import { axiosInstance } from "../config";
 import { AxiosError } from "axios";
@@ -271,10 +272,15 @@ const TodoList = () => {
             )}
           </div>
           <div className="flex items-center justify-end space-x-3 mt-6">
-            <Button variant={"cancel"} onClick={onCloseEditModal} type="button">
+            <Button
+              variant={"cancel"}
+              onClick={onCloseEditModal}
+              type="button"
+              fullWidth
+            >
               Cancel
             </Button>
-            <Button isLoading={isUpdating} type={"submit"}>
+            <Button isLoading={isUpdating} type={"submit"} fullWidth>
               {isUpdating ? "Updating..." : "Update"}
             </Button>
           </div>
@@ -312,10 +318,11 @@ const TodoList = () => {
               variant={"cancel"}
               onClick={onCloseAddModal}
               type={"button"}
+              fullWidth
             >
               Cancel
             </Button>
-            <Button isLoading={isAdding} type={"submit"}>
+            <Button isLoading={isAdding} type={"submit"} fullWidth>
               {isAdding ? "Adding..." : "Add"}
             </Button>
           </div>
@@ -334,10 +341,11 @@ const TodoList = () => {
             variant="cancel"
             onClick={onCloseConfirmModal}
             type={"button"}
+            fullWidth
           >
             Cancel
           </Button>
-          <Button variant="danger" onClick={onRemove} type={"submit"}>
+          <Button variant="danger" onClick={onRemove} type={"submit"} fullWidth>
             Yes, Remove
           </Button>
         </div>
